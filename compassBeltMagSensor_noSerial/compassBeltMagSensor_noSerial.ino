@@ -7,6 +7,11 @@ Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
 int binaryArray[3] = {0};
 int index = 0;
 
+/*Assign a pin to read from the Potentiometer*/
+int pinPotentiometer = 12;  // Connecting the potentiometer to an analog and
+int valuePotentiometer;
+int offset;
+
 void getBinary(int _input, int _binaryArray[])
 {
   index = 0;
@@ -73,12 +78,20 @@ void setup(void)
 
 void loop(void)
 {
+
+  valuePotentiometer = analogRead(pinPotentiometer);  // Reading Potentiometer
+  offset = map(valuePotentiometer, 0, 1023, 0, 8);  // Changing to scale values
+
+
   /* Get a new sensor event */
   sensors_event_t event;
   mag.getEvent(&event);
   event.magnetic.x = event.magnetic.x + 22;
   event.magnetic.y = event.magnetic.y + 15;
-  getBinary(getEighthFromVector(event.magnetic.y, event.magnetic.x), binaryArray);
+
+  // compass reading + potentiometer offset
+  int motorValue = getEighthFromVector(event.magnetic.y, event.magnetic.x) + offset;
+  getBinary(motorValue, binaryArray);
 
   digitalWrite(6, binaryArray[0] == 1 ? HIGH : LOW);//0
   digitalWrite(9, binaryArray[1] == 1 ? HIGH : LOW);//1
@@ -88,3 +101,5 @@ void loop(void)
     binaryArray[2]=0;
     delay(500);
 }
+
+

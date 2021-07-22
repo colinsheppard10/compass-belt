@@ -1,3 +1,5 @@
+// Description: potentiometer for Arduino
+
 int const PinPot = A0;  // Connecting the potentiometer to an analog and
 
 int ValuePot;  // Creating variable
@@ -17,3 +19,33 @@ void loop() {
   Serial.print(Angle);
   Serial.println(" ");
 }
+
+/*
+Description: potentiometer for Flora
+
+///////////////////////////////////////////////////////////////////////////////
+// Circuit Playground Analog In - Speaker Fun ?
+//
+// Author: Carter Nelson
+// MIT License (https://opensource.org/licenses/MIT)
+
+#include <Adafruit_CircuitPlayground.h>
+
+uint16_t value;
+uint16_t freq;
+
+///////////////////////////////////////////////////////////////////////////////
+void setup() {
+  Serial.begin(9600);
+  CircuitPlayground.begin();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void loop() {
+  value = analogRead(10);
+  freq = map(value, 0, 1023, 100, 10000);
+
+  CircuitPlayground.playTone(freq, 100, false);
+}
+
+*/
