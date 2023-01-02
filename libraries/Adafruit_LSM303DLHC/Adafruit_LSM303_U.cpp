@@ -47,12 +47,9 @@ void Adafruit_LSM303_Accel_Unified::write8(byte address, byte reg, byte value)
 {
   Wire.beginTransmission(address);
 #if ARDUINO >= 100
-  Serial.println("Wire.write((uint8_t)reg);");
   Wire.write((uint8_t)reg);
-  Serial.println("Wire.write((uint8_t)value);");
   Wire.write((uint8_t)value);
 #else
-  Serial.println("Wire.send(reg);");
   Wire.send(reg);
   Wire.send(value);
 #endif
@@ -160,18 +157,14 @@ Adafruit_LSM303_Accel_Unified::Adafruit_LSM303_Accel_Unified(int32_t sensorID)
 /**************************************************************************/
 bool Adafruit_LSM303_Accel_Unified::begin()
 {
-  Serial.println("Adafruit_LSM303_Accel_Unified::begin()");
   // Enable I2C
-  Serial.println("Wire.begin()");
   Wire.begin();
 
-  Serial.println("write8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 0x57);");
   // Enable the accelerometer (100Hz)
   write8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A, 0x57);
 
   // LSM303DLHC has no WHOAMI register so read CTRL_REG1_A back to check
   // if we are connected or not
-  Serial.println("read8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A);");
   uint8_t reg1_a = read8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A);
   if (reg1_a != 0x57)
   {
@@ -243,11 +236,14 @@ void Adafruit_LSM303_Mag_Unified::write8(byte address, byte reg, byte value)
 {
   Wire.beginTransmission(address);
 #if ARDUINO >= 100
+  Serial.println("Wire.write((uint8_t)reg);");
   Wire.write((uint8_t)reg);
   Wire.write((uint8_t)value);
 #else
+  Serial.println("Wire.send(reg);");
   Wire.send(reg);
   Wire.send(value);
+  Serial.println("p Wire.send(reg);");
 #endif
   Wire.endTransmission();
 }
@@ -358,9 +354,9 @@ bool Adafruit_LSM303_Mag_Unified::begin()
 
   // Enable the magnetometer
   write8(LSM303_ADDRESS_MAG, LSM303_REGISTER_MAG_MR_REG_M, 0x00);
-
   // LSM303DLHC has no WHOAMI register so read CRA_REG_M to check
   // the default value (0b00010000/0x10)
+
   uint8_t reg1_a = read8(LSM303_ADDRESS_MAG, LSM303_REGISTER_MAG_CRA_REG_M);
   if (reg1_a != 0x10)
   {
@@ -585,7 +581,6 @@ void Adafruit_LSM303_Mag_Unified::getSensor(sensor_t *sensor)
  ***************************************************************************/
 bool Adafruit_LSM303::begin()
 {
-  Serial.print("Adafruit_LSM303::begin()");
   Wire.begin();
 
   // Enable the accelerometer
