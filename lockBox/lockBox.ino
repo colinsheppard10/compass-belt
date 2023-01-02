@@ -14,62 +14,73 @@
 
 #include <TimeLib.h>
 
-#define TIME_HEADER "T"  // Header tag for serial time sync message
-#define TIME_REQUEST 7   // ASCII bell character requests a time sync message
+const int buttonPin = 2;  // the number of the pushbutton pin
+const int ledPin = 13;    // the number of the LED pin
+int phoneIsInBox = 0;  // variable for reading the pushbutton status
+int alarmIsActive = 0;
+
+
+/*
+  No Wrap inSide
+    12:00
+    10:00
+    13:00
+
+  No Wrap outSide
+    15:00
+    10:00
+    13:00
+
+  Yes Wrap inSide
+    2:00
+    20:00
+    5:00
+
+  Yes Wrap outSide
+    18:00
+    20:00
+    5:00
+*/
+
+int currentHour = 2;
+int currentMinute = 0;
+
+int startHour = 20;
+int startMinute = 0;
+
+int endHour = 5;
+int endMinute = 0;
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial)
-    ;  // Needed for Leonardo only
-  pinMode(13, OUTPUT);
-  //  setSyncProvider( requestSync);  //set function to call when sync required
-  
-  // Wrap before - F
-  runTest(
-    18, 30, 
-    20, 00, 
-    5, 00
-  );
+  while (!Serial);
 
-  // Wrap in - T
-  runTest(
-    21, 30, 
-    20, 00, 
-    5, 00
-  );
-
-  // Wrap in - T
-  runTest(
-    4, 30, 
-    20, 00, 
-    5, 00
-  );
-
-  // Wrap after - F
-  runTest(
-    7, 30, 
-    20, 00, 
-    5, 00
-  );
-
+  // initialize the LED pin as an output:
+  pinMode(ledPin, OUTPUT);
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
 }
 
 void loop() {
-  // if (timeStatus() == timeNotSet) {
-  //   const unsigned long DEFAULT_TIME = 1672526574; // Jan 1 2013 - paul,
-  //   perhaps we define in time.h? setTime(DEFAULT_TIME); // Sync Arduino clock
-  //   to the default time
-  // }
+  // read the state of the pushbutton value:
+  phoneIsInBox = digitalRead(buttonPin);
+  alarmIsActive = currentTimeIsBetween(
+    currentHour,
+    currentMinute,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute
+  );
 
-  // if (timeStatus()!= timeNotSet) {
-  //   digitalClockDisplay();
-  // }
-  // if (timeStatus() == timeSet) {
-  //   digitalWrite(13, HIGH); // LED on if synced
-  // } else {
-  //   digitalWrite(13, LOW);  // LED off if needs refresh
-  // }
-  delay(1000);
+  // If alarmIsActive and phoneIsNotInBox
+  if (alarmIsActive && phoneIsInBox == LOW) {
+    // turn LED on:
+    digitalWrite(ledPin, HIGH);
+  } else {
+    // turn LED off:
+    digitalWrite(ledPin, LOW);
+  }
 }
 
 void runTest(
