@@ -26,10 +26,13 @@ void setup() {
     while (1) delay(10);
   }
 
-  if (!rtc.isrunning()) {
-    Serial.println("RTC is NOT running, let's set the time!");
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  }
+  // uncomment this to set the time
+  // if (rtc.isrunning()) {
+  //   Serial.println("RTC is running, let's set the time!");
+  //   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  // Not sure where __TIME__ comes from but I can write it manually like this;
+  //   rtc.adjust(DateTime(F(__DATE__), F("20:05:24")));
+  // }
 }
 
 void loop() {
